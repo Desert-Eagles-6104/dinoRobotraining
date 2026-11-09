@@ -34,12 +34,12 @@ public final class Constants {
 	}
 
 	public static final class TrainingRollerConstants {
-		public static final MotorSubsystemConfiguration CONFIG = 
+		public static final MotorSubsystemConfiguration CONFIG =
 				new MotorSubsystemConfiguration()
 					.withName("TrainingRoller")
 					.withMaster(
 						new MasterMotorConstants(
-							51, "rio", false, 
+							51, "rio", false,
 							new TalonFXConfiguration()
 								.withMotorOutput(
 									new MotorOutputConfigs()
@@ -52,6 +52,7 @@ public final class Constants {
 						new DCMotorMechanismSimConfig(0.002, 0.1)
 					);
 		public static final double TRAINING_OUTPUT = 0.15;
+		public static final double EJECT_OUTPUT = -0.10;
 	}
 
 	public static final class RobotConstants {

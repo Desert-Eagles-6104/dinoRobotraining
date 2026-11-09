@@ -22,7 +22,9 @@ import frc.robot.sim.FieldVisualization;
 import frc.robot.sim.SimCoordinator;
 import frc.robot.subsystems.trainingFlywheel.TrainingFlywheel;
 import frc.robot.subsystems.trainingRoller.TrainingRoller;
+import frc.robot.subsystems.trainingRoller.commands.TrainingRollerHoldCollect;
 import frc.robot.subsystems.vision.Vision2026;
+import frc.robot.subsystems.trainingRoller.commands.TrainingRollerHoldCollect;
 
 import java.util.Optional;
 
@@ -111,11 +113,10 @@ public class RobotContainer {
 				new MotorSubsystemSetPercentage<>(flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
 			)
 		);
-		this.trainingRoller.ifPresent(roller ->
-			this.driverController.northButton().whileTrue(
-				new MotorSubsystemSetPercentage<>(roller, () -> Constants.TrainingRollerConstants.TRAINING_OUTPUT)
-			)
-		);
+
+		if (this.trainingRoller.isPresent()) {
+			this.driverController.northButton().whileTrue(new TrainingRollerHoldCollect());
+}
 
 	}
 
