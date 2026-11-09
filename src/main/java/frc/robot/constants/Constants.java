@@ -10,7 +10,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.DELib26.motors.MasterMotorConstants;
 import frc.DELib26.motors.PIDControllerContainer;
+import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemConfiguration;
+import frc.DELib26.subsystems.motorSubsystems.motorBase.mechanismSim.DCMotorMechanismSim.DCMotorMechanismSimConfig;
 import frc.DELib26.subsystems.swerve.swerveUtil.COTSTalonFXSwerveConstants.SDS.MK4i;
 import frc.DELib26.subsystems.swerve.swerveUtil.SwerveConfig;
 import frc.DELib26.subsystems.vision.visionUtil.VisionSubsystemConfiguration;
@@ -28,6 +31,27 @@ public final class Constants {
 		public static final double MAX_START_TRANS_ERROR_METERS = 0.8;
 		public static final double MAX_START_HEADING_ERROR_DEGREES = 180;
 		public static final double AUTONOMOUS_VISION_LOOKBACK_TIME_SECONDS = 0.5;
+	}
+
+	public static final class TrainingRollerConstants {
+		public static final MotorSubsystemConfiguration CONFIG = 
+				new MotorSubsystemConfiguration()
+					.withName("TrainingRoller")
+					.withMaster(
+						new MasterMotorConstants(
+							51, "rio", false, 
+							new TalonFXConfiguration()
+								.withMotorOutput(
+									new MotorOutputConfigs()
+										.withNeutralMode(NeutralModeValue.Coast)
+								)
+
+						)
+					).withMechanismType(MotorSubsystemConfiguration.MechanismType.ANGULAR)
+					.withMechanismSimConfig(
+						new DCMotorMechanismSimConfig(0.002, 0.1)
+					);
+		public static final double TRAINING_OUTPUT = 0.15;
 	}
 
 	public static final class RobotConstants {

@@ -8,6 +8,7 @@ import frc.DELib26.CANBus.CANBusStatusLogger;
 import frc.DELib26.autos.PathPlannerAutoBuilder;
 import frc.DELib26.controller.ControllerType;
 import frc.DELib26.controller.GenericController;
+import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage;
 import frc.DELib26.subsystems.swerve.SwerveSubsystem;
 import frc.DELib26.subsystems.swerve.swerveCommands.TeleopDrive;
 import frc.DELib26.subsystems.swerve.swerveIO.SwerveIO;
@@ -19,6 +20,8 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.RobotConstants;
 import frc.robot.sim.FieldVisualization;
 import frc.robot.sim.SimCoordinator;
+import frc.robot.subsystems.trainingFlywheel.TrainingFlywheel;
+import frc.robot.subsystems.trainingRoller.TrainingRoller;
 import frc.robot.subsystems.vision.Vision2026;
 
 import java.util.Optional;
@@ -44,6 +47,8 @@ public class RobotContainer {
 	// subsystems
 	public final SwerveSubsystem swerveSubsystem;
 	public final VisionSubsystem visionSubsystem;
+	public final Optional<TrainingFlywheel> trainingFlywheel;
+	public final Optional<TrainingRoller> trainingRoller;
 
 	// autos
 	public final PathPlannerAutoBuilder autoBuilder;
@@ -68,6 +73,14 @@ public class RobotContainer {
 
 		this.visionSubsystem = new Vision2026(Constants.VisionConstants.VISION_CONFIG, this.robotState2026);
 
+		this.trainingFlywheel = isSim
+			? Optional.of(new TrainingFlywheel())
+			: Optional.empty();
+
+		this.trainingRoller = isSim
+			? Optional.of(new TrainingRoller())
+			: Optional.empty();
+
 		if (isSim) {
 			this.simCoordinator = Optional.of(new SimCoordinator(
 					this.robotState2026,
@@ -91,6 +104,19 @@ public class RobotContainer {
 		// pose reset
 		this.driverController.options()
 				.onTrue(new InstantCommand(() -> this.swerveSubsystem.resetRotationToAllianceForward()));
+
+
+		this.trainingFlywheel.ifPresent(flywheel ->
+			this.driverController.southButton().whileTrue(
+				new MotorSubsystemSetPercentage<>(flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
+			)
+		);
+		this.trainingRoller.ifPresent(roller ->
+			this.driverController.northButton().whileTrue(
+				new MotorSubsystemSetPercentage<>(roller, () -> Constants.TrainingRollerConstants.TRAINING_OUTPUT)
+			)
+		);
+
 	}
 
 	public final void logTelemetry() {
@@ -114,6 +140,9 @@ public class RobotContainer {
 			this.swerveSubsystem.logTelemetry();
 			this.visionSubsystem.logTelemetry();
 		}
+
+		this.trainingRoller.ifPresent(TrainingRoller::logTelemetry);
+		this.trainingFlywheel.ifPresent(TrainingFlywheel::logTelemetry);
 	}
 
 	public final void disableAll() {

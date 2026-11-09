@@ -8,6 +8,8 @@ import frc.DELib26.subsystems.motorSubsystems.motorBase.mechanismSim.DCMotorMech
 
 public final class TrainingFlywheel extends MotorSubsystemTalon {
 
+	public static final double TRAINING_OUTPUT = 0.15;
+
 	public TrainingFlywheel() {
 		super(createConfiguration());
 	}
